@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:local": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -22,5 +23,8 @@
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "minimatch": "^10.2.1"
   }
 }
