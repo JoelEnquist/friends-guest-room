@@ -4,27 +4,45 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:local": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "bash scripts/db-deploy.sh",
+    "db:seed": "prisma db seed",
+    "db:start": "docker compose up -d postgres",
+    "dev:local": "docker compose up -d postgres && prisma generate && bash scripts/db-deploy.sh && prisma db seed && next dev"
   },
   "dependencies": {
-    "next": "16.1.6",
-    "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "@next-auth/prisma-adapter": "^1.0.7",
+    "@prisma/client": "^6.19.2",
+    "googleapis": "^144.0.0",
+    "next": "^14.2.25",
+    "next-auth": "^4.24.11",
+    "qrcode": "^1.5.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.1.6",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "@types/node": "^22.13.1",
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.25",
+    "postcss": "^8.5.3",
+    "prisma": "^6.19.2",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
   },
-  "overrides": {
-    "minimatch": "^10.2.1"
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }

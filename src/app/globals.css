@@ -1,26 +1,560 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #f6f7f3;
+  --surface: #ffffff;
+  --text: #112211;
+  --muted: #5d6c5d;
+  --accent: #2f6b3e;
+  --accent-soft: #e9f3ea;
+  --border: #d9e0d6;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: radial-gradient(circle at top, #fdfbf4 0%, var(--bg) 55%);
+  color: var(--text);
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  min-height: 100vh;
+}
+
+.public-shell {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(47, 107, 62, 0.045), transparent 42%),
+    radial-gradient(circle at 88% 8%, rgba(0, 0, 0, 0.03), transparent 40%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.6));
+}
+
+.public-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.025) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(circle at 50% 20%, black 18%, rgba(0, 0, 0, 0.7) 52%, transparent 95%);
+}
+
+.public-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.45), transparent 25%, transparent 75%, rgba(255, 255, 255, 0.35)),
+    radial-gradient(circle at 70% 36%, rgba(47, 107, 62, 0.04), transparent 34%);
+}
+
+a {
+  color: inherit;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+.signal-sweep {
+  animation: grow-room-sweep 9s ease-in-out infinite;
+}
+
+.signal-dot {
+  animation: grow-room-dot-pulse 2.8s ease-in-out infinite;
+}
+
+.signal-ring {
+  animation: grow-room-ring-pulse 2.6s ease-in-out infinite;
+}
+
+.signal-range {
+  animation: grow-room-range-breath 5.6s ease-in-out infinite;
+}
+
+@keyframes grow-room-sweep {
+  0%,
+  12% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  60% {
+    transform: translateX(360px);
+    opacity: 1;
+  }
+  74%,
+  100% {
+    transform: translateX(420px);
+    opacity: 0;
+  }
+}
+
+@keyframes grow-room-dot-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes grow-room-ring-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+}
+
+@keyframes grow-room-range-breath {
+  0%,
+  100% {
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+  50% {
+    background-color: rgba(0, 0, 0, 0.16);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signal-sweep,
+  .signal-dot,
+  .signal-ring,
+  .signal-range {
+    animation: none !important;
+  }
+}
+
+.grow-signal-panel {
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.84)),
+    radial-gradient(circle at 82% 18%, rgba(47, 107, 62, 0.08), transparent 55%);
+}
+
+.grow-signal-grid {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(circle at 50% 45%, black 35%, transparent 100%);
+}
+
+.grow-signal-dotfield {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.07) 1px, transparent 1.2px);
+  background-size: 18px 18px;
+  mask-image: radial-gradient(circle at 50% 45%, rgba(0, 0, 0, 0.85) 38%, transparent 96%);
+  animation: grow-room-dot-drift 24s linear infinite;
+}
+
+.grow-signal-glow {
+  background: radial-gradient(circle, rgba(47, 107, 62, 0.1) 0%, transparent 70%);
+  filter: blur(12px);
+  animation: grow-room-glow-drift 13s ease-in-out infinite;
+}
+
+.grow-signal-sweep {
+  background:
+    linear-gradient(115deg, transparent 38%, rgba(47, 107, 62, 0.05) 50%, transparent 62%);
+  transform: translateX(-120%) skewX(-18deg);
+  animation: grow-room-hero-sweep 10s ease-in-out infinite;
+}
+
+.grow-signal-branch-base {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.13);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.grow-signal-branch-draw {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.55);
+  stroke-width: 1.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
+  animation: grow-room-branch-draw 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.grow-signal-branch-flow {
+  fill: none;
+  stroke: rgba(47, 107, 62, 0.45);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 20 180;
+  opacity: 0;
+  filter: blur(0.4px);
+  animation:
+    grow-room-branch-reveal 0.3s ease-out forwards,
+    grow-room-branch-flow 10s linear infinite;
+}
+
+.grow-signal-node-core,
+.grow-signal-node-leaf,
+.grow-signal-node-satellite,
+.grow-signal-core-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.grow-signal-node-core {
+  fill: #111;
+  animation: grow-room-core-pulse 5.4s ease-in-out infinite;
+}
+
+.grow-signal-core-ring {
+  fill: none;
+  stroke: rgba(47, 107, 62, 0.26);
+  stroke-width: 1;
+  opacity: 0.55;
+  animation: grow-room-core-ring 4.8s ease-in-out infinite;
+}
+
+.grow-signal-node-leaf {
+  fill: rgba(47, 107, 62, 0.92);
+  stroke: rgba(255, 255, 255, 0.7);
+  stroke-width: 0.8;
+  animation: grow-room-node-float 6.8s ease-in-out infinite;
+}
+
+.grow-signal-node-satellite {
+  fill: rgba(0, 0, 0, 0.72);
+  opacity: 0.75;
+  animation: grow-room-node-float 7.8s ease-in-out infinite;
+}
+
+.grow-signal-leaf {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: grow-room-leaf-sway 6.4s ease-in-out infinite;
+}
+
+.grow-signal-leaf-fill {
+  fill: rgba(47, 107, 62, 0.3);
+  stroke: rgba(47, 107, 62, 0.45);
+  stroke-width: 0.7;
+}
+
+.grow-signal-leaf-vein {
+  fill: none;
+  stroke: rgba(47, 107, 62, 0.55);
+  stroke-width: 0.55;
+  stroke-linecap: round;
+}
+
+.grow-signal-labels {
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  text-transform: lowercase;
+}
+
+.grow-signal-label {
+  fill: rgba(0, 0, 0, 0.5);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.grow-signal-label-core {
+  fill: rgba(0, 0, 0, 0.85);
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+}
+
+.grow-signal-label-long {
+  font-size: 9.8px;
+}
+
+.grow-signal-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.85);
+  padding: 0.18rem 0.55rem;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.grow-signal-chip-accent {
+  border-color: rgba(47, 107, 62, 0.2);
+  background: rgba(47, 107, 62, 0.06);
+  color: rgba(37, 85, 49, 0.95);
+}
+
+.grow-signal-label-connector {
+  stroke: rgba(0, 0, 0, 0.28);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+}
+
+.grow-signal-label-pill {
+  fill: rgba(255, 255, 255, 0.92);
+  stroke: rgba(0, 0, 0, 0.12);
+  stroke-width: 1;
+}
+
+.grow-signal-branch-line {
+  fill: none;
+  stroke: rgba(80, 84, 82, 0.42);
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
+  opacity: 0.78;
+  animation:
+    grow-room-strand-draw 1.35s cubic-bezier(0.24, 0.78, 0.2, 1) forwards,
+    grow-room-strand-breathe 9s ease-in-out infinite;
+}
+
+.grow-signal-room-pill {
+  fill: rgba(181, 183, 182, 0.92);
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 1;
+}
+
+.grow-signal-room-pill-text {
+  fill: rgba(255, 255, 255, 0.95);
+  font-size: 10.8px;
+  letter-spacing: 0.03em;
+}
+
+.grow-signal-node-hub,
+.grow-signal-node-green,
+.grow-signal-node-gray {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.grow-signal-node-hub {
+  fill: #3a975a;
+  stroke: rgba(43, 45, 44, 0.78);
+  stroke-width: 1.35;
+  animation: grow-room-hub-pulse 6.8s ease-in-out infinite;
+}
+
+.grow-signal-node-green {
+  fill: #3a975a;
+  stroke: rgba(255, 255, 255, 0.62);
+  stroke-width: 0.9;
+  animation: grow-room-node-soft-pulse 7.4s ease-in-out infinite;
+}
+
+.grow-signal-node-gray {
+  fill: rgba(138, 142, 145, 0.95);
+  stroke: rgba(255, 255, 255, 0.62);
+  stroke-width: 0.9;
+  animation: grow-room-node-soft-pulse 8.4s ease-in-out infinite;
+}
+
+@keyframes grow-room-hero-sweep {
+  0%,
+  12% {
+    transform: translateX(-130%) skewX(-18deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  58% {
+    transform: translateX(135%) skewX(-18deg);
+    opacity: 1;
+  }
+  70%,
+  100% {
+    transform: translateX(180%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+@keyframes grow-room-branch-draw {
+  0% {
+    stroke-dashoffset: 420;
+    opacity: 0.2;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.95;
+  }
+}
+
+@keyframes grow-room-strand-draw {
+  0% {
+    stroke-dashoffset: 420;
+    opacity: 0.18;
+  }
+  40% {
+    opacity: 0.68;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.82;
+  }
+}
+
+@keyframes grow-room-strand-breathe {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes grow-room-branch-reveal {
+  to {
+    opacity: 0.8;
+  }
+}
+
+@keyframes grow-room-branch-flow {
+  from {
+    stroke-dashoffset: 240;
+  }
+  to {
+    stroke-dashoffset: -240;
+  }
+}
+
+@keyframes grow-room-node-float {
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-1px) scale(1.025);
+  }
+}
+
+@keyframes grow-room-core-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.035);
+  }
+}
+
+@keyframes grow-room-core-ring {
+  0%,
+  100% {
+    opacity: 0.28;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 0.72;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes grow-room-leaf-sway {
+  0%,
+  100% {
+    opacity: 0.62;
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-0.8px) scale(1.03);
+  }
+}
+
+@keyframes grow-room-glow-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate3d(6px, -4px, 0) scale(1.06);
+    opacity: 1;
+  }
+}
+
+@keyframes grow-room-dot-drift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-18px, -18px, 0);
+  }
+}
+
+@keyframes grow-room-node-soft-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.035);
+  }
+}
+
+@keyframes grow-room-hub-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(58, 151, 90, 0));
+  }
+  50% {
+    transform: scale(1.02);
+    filter: drop-shadow(0 0 4px rgba(58, 151, 90, 0.14));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grow-signal-glow,
+  .grow-signal-sweep,
+  .grow-signal-dotfield,
+  .grow-signal-branch-line,
+  .grow-signal-branch-draw,
+  .grow-signal-branch-flow,
+  .grow-signal-node-core,
+  .grow-signal-core-ring,
+  .grow-signal-node-leaf,
+  .grow-signal-node-satellite,
+  .grow-signal-node-hub,
+  .grow-signal-node-green,
+  .grow-signal-node-gray,
+  .grow-signal-leaf {
+    animation: none !important;
+  }
+
+  .public-shell::before,
+  .public-shell::after {
+    animation: none !important;
+  }
 }
